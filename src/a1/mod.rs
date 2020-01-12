@@ -1,7 +1,7 @@
 use nannou::prelude::*;
 use rand;
 
-pub fn start_a0() {
+pub fn start_a1() {
     nannou::app(model).run();
 }
 
@@ -14,7 +14,7 @@ fn model(app: &App) -> Model {
     let window = app
         .new_window()
         .with_dimensions(512, 512)
-        .with_title("a0")
+        .with_title("a1")
         .view(view) // The function that will be called for presenting graphics to a frame.
         .event(event) // The function that will be called when the window receives events.
         .build()
@@ -37,21 +37,16 @@ fn view(app: &App, _model: &Model, frame: &Frame) {
 
     draw.background().color(BLACK);
 
-    for i in 0..16 {
-        for j in 0..16 {
-            draw.ellipse()
-                .w_h(
-                    30.0 + 12.0 * t.cos() * rand::random::<f32>(),
-                    30.0 + 12.0 * t.cos() * rand::random::<f32>(),
-                )
-                .x_y(
-                    -256.0 + i as f32 * 32.0 + 16.0 + rand::random::<f32>(),
-                    -256.0 + j as f32 * 32.0 + 16.0 + rand::random::<f32>(),
-                )
+    const SIZE: f32 = 8.0;
+    for row in 0..64 {
+        for column in 0..64 {
+            draw.rect()
+                .w_h(SIZE, SIZE)
+                .x_y(-252.0 + column as f32 * SIZE, -252.0 + row as f32 * SIZE)
                 .color(rgb(
                     0.9 + rand::random::<f32>() * 0.1,
-                    0.7 + rand::random::<f32>() * 0.3,
                     0.0,
+                    0.7 + rand::random::<f32>() * 0.3,
                 ));
         }
     }

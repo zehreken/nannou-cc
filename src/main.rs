@@ -2,6 +2,8 @@ use std::env;
 
 mod a0;
 pub use crate::a0::*;
+mod a1;
+pub use crate::a1::*;
 
 const A0: &str = "--a0";
 const A1: &str = "--a1";
@@ -23,6 +25,7 @@ fn main() {
         let arg: &str = &args[1][..];
         match arg {
             A0 => start_a0(),
+            A1 => start_a1(),
             _ => println!("Unknown arguement!"),
         }
     }
