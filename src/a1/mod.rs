@@ -44,7 +44,7 @@ fn view(app: &App, _model: &Model, frame: &Frame) {
                 .w_h(SIZE, SIZE)
                 .x_y(-252.0 + column as f32 * SIZE, -252.0 + row as f32 * SIZE)
                 .color(rgb(
-                    0.9 + rand::random::<f32>() * 0.1,
+                    0.8 + rand::random::<f32>() * 0.2,
                     0.0,
                     0.7 + rand::random::<f32>() * 0.3,
                 ));
