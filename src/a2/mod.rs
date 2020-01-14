@@ -44,31 +44,41 @@ fn view(app: &App, _model: &Model, frame: &Frame) {
     let v7 = Vector3::new(-1.0, -1.0, 4.0);
     let mut vertices = vec![v0, v1, v2, v3, v4, v5, v6, v7];
 
-    // for i in 0..vertices.len() {
-    //     vertices[i] = rotate_vector(vertices[i], 1.0);
-    // }
-    // for vertex in vertices {
-    //     let p = get_projected_position(camera_position, vertex, 1.0);
-    //     println!("{:?}", p);
+    for i in 0..vertices.len() {
+        vertices[i] = translate_vector(vertices[i], Vector3::new(0.5 * t, 0.0, 0.0));
+    }
 
-    //     draw.rect()
-    //         .w_h(4.0, 4.0)
-    //         .x_y(p.x * 100.0, p.y * 100.0)
-    //         .color(WHITE);
-    // }
+    for i in 0..vertices.len() {
+        vertices[i] = rotate_vector(vertices[i], 0.1 * t);
+    }
+
+    let indices = vec![
+        0, 1, 2, 0, 2, 3, // front
+        4, 5, 7, 5, 6, 7, // back
+        4, 5, 1, 4, 1, 0, // top
+        3, 2, 6, 3, 6, 7, // bottom
+        0, 4, 7, 0, 7, 3, // left
+        1, 5, 2, 5, 6, 2, // right
+    ];
 
     let n_points = vertices.len();
     let points: Vec<Point2> = (0..n_points)
         .map(|i| {
             let vertex = vertices[i];
             let p = get_projected_position(camera_position, vertex, 1.0);
-            pt2(p.x * 100.0, p.y * 100.0)
+            pt2(p.x * 256.0, p.y * 256.0)
         })
         .collect();
 
-    draw.line()
-        .color(PALEGOLDENROD)
-        .points(points[0], points[1]);
+    for i in (0..indices.len()).step_by(3) {
+        let _points = vec![
+            points[indices[i]],
+            points[indices[i + 1]],
+            points[indices[i + 2]],
+            points[indices[i]],
+        ];
+        draw.polyline().color(WHITE).points(_points);
+    }
 
     draw.background().color(BLACK);
 
@@ -85,6 +95,10 @@ fn get_projected_position(
     distance = distance * view_plane_distance / distance.z;
 
     distance
+}
+
+fn translate_vector(v: Vector3, delta: Vector3) -> Vector3 {
+    Vector3::new(v.x + delta.x, v.y + delta.y, v.z + delta.z)
 }
 
 fn rotate_vector(v: Vector3, angle: f32) -> Vector3 {
