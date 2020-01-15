@@ -45,8 +45,12 @@ fn view(app: &App, _model: &Model, frame: &Frame) {
     let mut vertices = vec![v0, v1, v2, v3, v4, v5, v6, v7];
 
     for i in 0..vertices.len() {
-        vertices[i] = translate_vector(vertices[i], Vector3::new(1.5 * t.cos(), 0.0, 0.0));
+        vertices[i] = rotate_around_y(vertices[i], 0.4 * t, Vector3::new(0.0, 0.0, 3.0));
     }
+
+    // for i in 0..vertices.len() {
+    //     vertices[i] = translate_vector(vertices[i], Vector3::new(1.5 * t.cos(), 0.0, 0.0));
+    // }
 
     // for i in 0..vertices.len() {
     //     vertices[i] = rotate_vector(vertices[i], 0.1 * t);
@@ -77,7 +81,9 @@ fn view(app: &App, _model: &Model, frame: &Frame) {
             points[indices[i + 2]],
             points[indices[i]],
         ];
-        draw.polygon().color(Rgba::new(1.0 - i as f32 * 0.1, 0.0, i as f32 * 0.05, 0.5)).points(_points.clone());
+        draw.polygon()
+            .color(Rgba::new(1.0 - i as f32 * 0.1, 0.0, i as f32 * 0.05, 0.5))
+            .points(_points.clone());
         draw.polyline().color(WHITE).points(_points);
     }
 
@@ -102,15 +108,35 @@ fn translate_vector(v: Vector3, delta: Vector3) -> Vector3 {
     Vector3::new(v.x + delta.x, v.y + delta.y, v.z + delta.z)
 }
 
-fn rotate_vector(v: Vector3, angle: f32) -> Vector3 {
-    Vector3::new(
-        v.x * angle.cos() - v.y * angle.sin(),
-        v.x * angle.sin() + v.y * angle.cos(),
-        v.z,
-    )
-    // Vector3::new(
-    //     v.x * angle.cos() + v.z * angle.sin(),
-    //     v.y,
-    //     -v.x * angle.sin() + v.z * angle.cos(),
-    // )
+fn rotate_around_x(v: Vector3, angle: f32, axis: Vector3) -> Vector3 {
+    let diff = v - axis;
+    let rotation = Vector3::new(
+        diff.x,
+        diff.y * angle.cos() - diff.z * angle.sin(),
+        diff.y * angle.sin() + diff.z * angle.cos(),
+    );
+
+    rotation + axis
+}
+
+fn rotate_around_y(v: Vector3, angle: f32, axis: Vector3) -> Vector3 {
+    let diff = v - axis;
+    let rotation = Vector3::new(
+        diff.x * angle.cos() + diff.z * angle.sin(),
+        diff.y,
+        -diff.x * angle.sin() + diff.z * angle.cos(),
+    );
+
+    rotation + axis
+}
+
+fn rotate_around_z(v: Vector3, angle: f32, axis: Vector3) -> Vector3 {
+    let diff = v - axis;
+    let rotation = Vector3::new(
+        diff.x * angle.cos() - diff.y * angle.sin(),
+        diff.x * angle.sin() + diff.y * angle.cos(),
+        diff.x,
+    );
+
+    rotation + axis
 }
