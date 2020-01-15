@@ -45,7 +45,7 @@ fn view(app: &App, _model: &Model, frame: &Frame) {
     let mut vertices = vec![v0, v1, v2, v3, v4, v5, v6, v7];
 
     for i in 0..vertices.len() {
-        vertices[i] = rotate_around_y(vertices[i], 0.4 * t, Vector3::new(0.0, 0.0, 3.0));
+        vertices[i] = rotate_around_y(vertices[i], 20.0 * t.cos(), Vector3::new(0.0, 0.0, 3.0));
     }
 
     // for i in 0..vertices.len() {
