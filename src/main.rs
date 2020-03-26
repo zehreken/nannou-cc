@@ -15,7 +15,6 @@ const A4: &str = "--a4";
 const A5: &str = "--a5";
 
 fn main() {
-    start_a2();
     let args: Vec<String> = env::args().collect();
     if args.len() < 2 {
         println!(

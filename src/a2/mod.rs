@@ -13,8 +13,8 @@ struct Model {
 fn model(app: &App) -> Model {
     let window = app
         .new_window()
-        .with_dimensions(512, 512)
-        .with_title("a2")
+        .size(512, 512)
+        .title("a2")
         .view(view) // The function that will be called for presenting graphics to a frame.
         .event(event) // The function that will be called when the window receives events.
         .build()
@@ -29,7 +29,7 @@ fn event(_app: &App, _model: &mut Model, event: WindowEvent) {}
 
 fn update(_app: &App, _model: &mut Model, _update: Update) {}
 
-fn view(app: &App, _model: &Model, frame: &Frame) {
+fn view(app: &App, _model: &Model, frame: Frame) {
     let t = app.time;
     let draw = app.draw();
 
