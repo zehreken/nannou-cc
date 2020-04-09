@@ -31,6 +31,14 @@ fn view(app: &App, _model: &Model, frame: Frame) {
 
     draw.background().color(BLACK);
 
+    let points = (0..=360).map(|i| {
+        let radian = deg_to_rad(i as f32);
+        let x = radian.cos() * 100.0;
+        let y = radian.sin() * 100.0;
+        (pt2(x, y), WHITE)
+    });
+    draw.polyline().weight(1.0).colored_points(points);
+
     draw.ellipse()
         .w_h(10.0, 10.0)
         .x_y(t.cos() * 100.0, t.sin() * 100.0)
