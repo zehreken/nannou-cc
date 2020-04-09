@@ -6,6 +6,8 @@ mod a1;
 pub use crate::a1::*;
 mod a2;
 pub use crate::a2::*;
+mod a3;
+pub use crate::a3::*;
 
 const A0: &str = "--a0";
 const A1: &str = "--a1";
@@ -29,6 +31,7 @@ fn main() {
             A0 => start_a0(),
             A1 => start_a1(),
             A2 => start_a2(),
+            A3 => start_a3(),
             _ => println!("Unknown arguement!"),
         }
     }
