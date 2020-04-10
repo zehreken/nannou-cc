@@ -1,13 +1,15 @@
 use std::env;
 
 mod a0;
-pub use crate::a0::*;
+use crate::a0::*;
 mod a1;
-pub use crate::a1::*;
+use crate::a1::*;
 mod a2;
-pub use crate::a2::*;
+use crate::a2::*;
 mod a3;
-pub use crate::a3::*;
+use crate::a3::*;
+mod a4;
+use crate::a4::*;
 
 const A0: &str = "--a0";
 const A1: &str = "--a1";
@@ -17,6 +19,7 @@ const A4: &str = "--a4";
 const A5: &str = "--a5";
 
 fn main() {
+    start_a4();
     let args: Vec<String> = env::args().collect();
     if args.len() < 2 {
         println!(
@@ -32,6 +35,7 @@ fn main() {
             A1 => start_a1(),
             A2 => start_a2(),
             A3 => start_a3(),
+            A4 => start_a4(),
             _ => println!("Unknown arguement!"),
         }
     }

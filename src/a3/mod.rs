@@ -44,7 +44,10 @@ fn view(app: &App, _model: &Model, frame: Frame) {
     for i in 1..11 {
         draw.ellipse()
             .w_h(10.0, 10.0)
-            .x_y((t * 0.2 * i as f32).cos() * 25.0 * i as f32, (t * 0.2 * i as f32).sin() * 25.0 * i as f32)
+            .x_y(
+                (t * 0.2 * i as f32).cos() * 25.0 * i as f32,
+                (t * 0.2 * i as f32).sin() * 25.0 * i as f32,
+            )
             .color(RED);
     }
 
