@@ -31,18 +31,22 @@ fn view(app: &App, _model: &Model, frame: Frame) {
 
     draw.background().color(BLACK);
 
-    let points = (0..=360).map(|i| {
-        let radian = deg_to_rad(i as f32);
-        let x = radian.cos() * 100.0;
-        let y = radian.sin() * 100.0;
-        (pt2(x, y), WHITE)
-    });
-    draw.polyline().weight(1.0).colored_points(points);
+    for n in 1..11 {
+        let points = (0..=360).map(|i| {
+            let radian = deg_to_rad(i as f32);
+            let x = radian.cos() * 25.0 * n as f32;
+            let y = radian.sin() * 25.0 * n as f32;
+            (pt2(x, y), WHITE)
+        });
+        draw.polyline().weight(1.0).colored_points(points);
+    }
 
-    draw.ellipse()
-        .w_h(10.0, 10.0)
-        .x_y(t.cos() * 100.0, t.sin() * 100.0)
-        .color(WHITE);
+    for i in 1..11 {
+        draw.ellipse()
+            .w_h(10.0, 10.0)
+            .x_y((t * 0.2 * i as f32).cos() * 25.0 * i as f32, (t * 0.2 * i as f32).sin() * 25.0 * i as f32)
+            .color(RED);
+    }
 
     draw.to_frame(app, &frame).unwrap();
 }
