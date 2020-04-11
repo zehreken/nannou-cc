@@ -32,27 +32,28 @@ fn view(app: &App, _model: &Model, frame: Frame) {
     draw.background().color(BLACK);
 
     let points = (0..=14400).step_by(10).map(|i| {
-        let radian = deg_to_rad(t * 0.1 * i as f32);
-        let x = radian.cos() * i as f32 * 0.02;
-        let y = radian.sin() * i as f32 * 0.02;
-        (pt2(x, y), GREEN)
+        let radian = deg_to_rad(t.cos() * 0.5 * i as f32);
+        let x = radian.cos() * i as f32 * 0.03;
+        let y = radian.sin() * i as f32 * 0.03;
+        (pt2(x, y), rgba(0.0, 0.0, 1.0, 0.8))
     });
-    draw.polyline().weight(1.0).colored_points(points);
+    draw.polyline().weight(8.0).colored_points(points);
 
     let points = (0..=14400).step_by(10).map(|i| {
-        let radian = deg_to_rad(t * 0.3 * i as f32);
-        let x = radian.cos() * i as f32 * 0.02;
-        let y = radian.sin() * i as f32 * 0.02;
-        (pt2(x, y), BLUE)
+        let radian = deg_to_rad(t.cos() * 0.5 * i as f32 + 120.0);
+        let x = radian.cos() * i as f32 * 0.03;
+        let y = radian.sin() * i as f32 * 0.03;
+        (pt2(x, y), rgba(0.0, 1.0, 0.0, 0.8))
     });
-    draw.polyline().weight(1.0).colored_points(points);
+    draw.polyline().weight(8.0).colored_points(points);
 
-    // for i in 1..11 {
-    //     draw.ellipse()
-    //         .w_h(10.0, 10.0)
-    //         .x_y((t * 0.2 * i as f32).cos() * 25.0 * i as f32, (t * 0.2 * i as f32).sin() * 25.0 * i as f32)
-    //         .color(RED);
-    // }
+    let points = (0..=14400).step_by(10).map(|i| {
+        let radian = deg_to_rad(t.cos() * 0.5 * i as f32 + 240.0);
+        let x = radian.cos() * i as f32 * 0.03;
+        let y = radian.sin() * i as f32 * 0.03;
+        (pt2(x, y), rgba(1.0, 0.0, 0.0, 0.8))
+    });
+    draw.polyline().weight(8.0).colored_points(points);
 
     draw.to_frame(app, &frame).unwrap();
 }
