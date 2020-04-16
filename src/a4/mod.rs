@@ -1,5 +1,4 @@
 use nannou::prelude::*;
-use rand;
 
 pub fn start_a4() {
     nannou::app(model).run();
@@ -13,7 +12,7 @@ fn model(app: &App) -> Model {
     let window = app
         .new_window()
         .size(512, 512)
-        .title("a3")
+        .title("a4")
         .view(view) // The function that will be called for presenting graphics to a frame.
         .event(event) // The function that will be called when the window receives events.
         .build()

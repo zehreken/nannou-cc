@@ -10,6 +10,8 @@ mod a3;
 use crate::a3::*;
 mod a4;
 use crate::a4::*;
+mod a5;
+use crate::a5::*;
 
 const A0: &str = "--a0";
 const A1: &str = "--a1";
@@ -19,7 +21,6 @@ const A4: &str = "--a4";
 const A5: &str = "--a5";
 
 fn main() {
-    start_a4();
     let args: Vec<String> = env::args().collect();
     if args.len() < 2 {
         println!(
@@ -36,6 +37,7 @@ fn main() {
             A2 => start_a2(),
             A3 => start_a3(),
             A4 => start_a4(),
+            A5 => start_a5(),
             _ => println!("Unknown arguement!"),
         }
     }
