@@ -26,20 +26,19 @@ fn view(app: &App, _model: &Model, frame: Frame) {
     draw.background().color(BLACK);
 
     let cycle = 8.0;
-    for y in 0..10 {
-        let wave: Vec<Point2> = (0..360)
-            .map(|i| {
-                let sign = if y % 2 == 0 {-1.0} else {1.0};
-                let angle = deg_to_rad(500.0 * t * sign + cycle * i as f32);
-                let val = -22.0 + y as f32 * 5.0 + angle.sin();
-                let x = -PI * cycle + cycle * i as f32 * 2.0 * PI as f32 / 360.0;
-                let scale = 10.0;
-                pt2(x * scale, val * scale)
-            })
-            .collect();
+    let wave: Vec<Point2> = (0..=360)
+        .step_by(2)
+        .map(|i| {
+            let angle = deg_to_rad(500.0 * t + cycle * i as f32);
+            let radian = deg_to_rad(i as f32);
+            let val = radian.sin() * 20.0 + angle.sin();
+            let x = radian.cos() * 20.0 + angle.cos();// * (-PI * cycle + cycle * i as f32 * 2.0 * PI as f32 / 360.0);
+            let scale = 10.0;
+            pt2(x * scale, val * scale)
+        })
+        .collect();
 
-        draw.polyline().weight(4.0).points(wave).color(RED);
-    }
+    draw.polyline().points(wave).color(YELLOW);
 
     draw.to_frame(app, &frame).unwrap();
 }
