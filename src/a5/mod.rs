@@ -25,10 +25,11 @@ fn view(app: &App, _model: &Model, frame: Frame) {
 
     draw.background().color(BLACK);
 
-    let colors = vec![YELLOW, RED, WHITE, ORANGE, CORNFLOWERBLUE];
+    let colors = vec![GOLD, CRIMSON, WHITE, ORANGE, CORNFLOWERBLUE, PURPLE];
 
     let cycle = 20.0;
-    for c in 1..=5 {
+    for mut c in 1..=6 {
+        c = 7 - c;
         let wave: Vec<Point2> = (0..=360)
             .map(|i| {
                 let angle = deg_to_rad(50.0 * t * c as f32 + cycle * i as f32);
@@ -41,8 +42,9 @@ fn view(app: &App, _model: &Model, frame: Frame) {
             })
             .collect();
 
-        draw.polyline()
-            .weight(5.0)
+        draw.polygon()
+            // polyline()
+            // .weight(5.0)
             .points(wave)
             .color(colors[c - 1]);
     }
