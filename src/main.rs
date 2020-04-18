@@ -42,7 +42,7 @@ fn main() {
             A4 => start_a4(),
             A5 => start_a5(),
             A6 => start_a6(),
-            _ => println!("Unknown arguement!"),
+            _ => println!("Unknown argument!"),
         }
     }
 }
