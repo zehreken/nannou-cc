@@ -1,4 +1,7 @@
 use nannou::prelude::*;
+use rand;
+
+const colors:[Srgb<u8>; 5] = [GOLD, BURLYWOOD, CORAL, CRIMSON, DARKORANGE];
 
 pub fn start_a6() {
     nannou::app(model).run();
@@ -6,42 +9,49 @@ pub fn start_a6() {
 
 struct Model {
     window: WindowId,
+    quarters: Vec<Quarter>,
 }
 
 fn model(app: &App) -> Model {
     let window = app
         .new_window()
         .size(512, 512)
-        .title("a5")
+        .title("a6")
         .view(view)
         .build()
         .unwrap();
-    Model { window }
-}
-
-fn view(app: &App, _model: &Model, frame: Frame) {
-    let t = app.time;
-    let draw = app.draw();
-
-    draw.background().color(BLACK);
 
     let mut quarters: Vec<Quarter> = Vec::new();
     for row in -8..8 {
         for column in -8..8 {
             let mut quarter = Quarter::new();
-            quarter.draw();
+            quarter.draw(rand::random::<u32>());
             quarters.push(quarter);
         }
     }
+    Model { window, quarters }
+}
 
-    let max = (t % 12.0) as usize;
-    for row in -8..8 {
-        for column in -8..8 {
-            let slice = &quarters[0].points[0..max];
+fn view(app: &App, model: &Model, frame: Frame) {
+    let t = app.time;
+    let draw = app.draw();
+
+    draw.background().color(BLACK);
+
+    let mut max = (30.0 * t % 100.0) as usize;
+    max = if max > 11 { 11 } else { max };
+    for row in 0..16 {
+        for column in 0..16 {
+            let index = row * 16 + column;
+            let slice = &model.quarters[index].points[0..max];
+            let color = model.quarters[index].color;
             draw.polygon()
                 .points(slice.to_vec())
-                .x_y(column as f32 * 32.0, row as f32 * 32.0)
-                .color(GOLD);
+                .x_y(
+                    (column as i32 - 8) as f32 * 32.0,
+                    (row as i32 - 8) as f32 * 32.0,
+                )
+                .color(color);
         }
     }
 
@@ -51,6 +61,7 @@ fn view(app: &App, _model: &Model, frame: Frame) {
 struct Quarter {
     position: Point2,
     points: Vec<Point2>,
+    color: Srgb<u8>,
 }
 
 impl Quarter {
@@ -58,17 +69,43 @@ impl Quarter {
         Quarter {
             position: pt2(0.0, 0.0),
             points: Vec::new(),
+            color: colors[rand::random::<usize>() % 5],
         }
     }
 
-    pub fn draw(&mut self) {
-        self.points = (0..=90)
+    pub fn draw(&mut self, mut q: u32) {
+        let position;
+        let range;
+        q = q % 4;
+        match q {
+            1 => {
+                position = pt2(32.0, 0.0);
+                range = (90, 180)
+            }
+            2 => {
+                position = pt2(32.0, 32.0);
+                range = (180, 270)
+            }
+            3 => {
+                position = pt2(0.0, 32.0);
+                range = (270, 360)
+            }
+            _ => {
+                position = pt2(0.0, 0.0);
+                range = (0, 90)
+            }
+        }
+        let (min, max) = range;
+        self.points = (min..=max)
             .step_by(10)
             .map(|i| {
                 let radian = deg_to_rad(i as f32);
-                pt2(radian.cos() * 32.0, radian.sin() * 32.0)
+                pt2(
+                    position.x + radian.cos() * 32.0,
+                    position.y + radian.sin() * 32.0,
+                )
             })
             .collect();
-        self.points.insert(0, self.position);
+        self.points.insert(0, position);
     }
 }
