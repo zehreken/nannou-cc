@@ -4,11 +4,13 @@ use rand;
 const COLORS: [Srgb<u8>; 5] = [GOLD, BURLYWOOD, CORAL, CRIMSON, DARKORANGE];
 
 pub fn start_a6() {
-    nannou::app(model).run();
+    nannou::app(model).update(update).run();
 }
 
 struct Model {
     window: WindowId,
+    duration: f32,
+    max: usize,
     quarters: Vec<Quarter>,
 }
 
@@ -29,21 +31,38 @@ fn model(app: &App) -> Model {
             quarters.push(quarter);
         }
     }
-    Model { window, quarters }
+    Model {
+        window,
+        duration: 0.0,
+        max: 0,
+        quarters,
+    }
+}
+
+fn update(app: &App, model: &mut Model, _update: Update) {
+    model.duration = model.duration + app.duration.since_prev_update.as_secs_f32();
+    model.max = (model.duration * 30.0) as usize;
+    if model.max > 11 {
+        model.max = 11;
+    }
+    if model.duration > 3.0 {
+        for quarter in model.quarters.iter_mut() {
+            quarter.draw(rand::random::<u32>());
+        }
+        model.duration = 0.0;
+        model.max = 0;
+    }
 }
 
 fn view(app: &App, model: &Model, frame: Frame) {
-    let t = app.time;
     let draw = app.draw();
 
     draw.background().color(BLACK);
 
-    let mut max = (30.0 * t % 100.0) as usize;
-    max = if max > 11 { 11 } else { max };
     for row in 0..16 {
         for column in 0..16 {
             let index = row * 16 + column;
-            let slice = &model.quarters[index].points[0..max];
+            let slice = &model.quarters[index].points[0..model.max];
             let color = model.quarters[index].color;
             draw.polygon()
                 .points(slice.to_vec())
@@ -53,12 +72,6 @@ fn view(app: &App, model: &Model, frame: Frame) {
                 )
                 .color(color);
         }
-    }
-
-    if t > 1000.0 {
-        // for quarter in model.quarters {
-            // quarter.draw(rand::random::<u32>());
-        // }
     }
 
     draw.to_frame(app, &frame).unwrap();
