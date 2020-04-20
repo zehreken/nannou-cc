@@ -55,30 +55,36 @@ fn view(app: &App, model: &Model, frame: Frame) {
         }
     }
 
+    if t > 1000.0 {
+        // for quarter in model.quarters {
+            // quarter.draw(rand::random::<u32>());
+        // }
+    }
+
     draw.to_frame(app, &frame).unwrap();
 }
 
 struct Quarter {
-    position: Point2,
     points: Vec<Point2>,
     color: Srgb<u8>,
+    state: u32,
 }
 
 impl Quarter {
     pub fn new() -> Quarter {
         Quarter {
-            position: pt2(0.0, 0.0),
             points: Vec::new(),
             color: COLORS[rand::random::<usize>() % 5],
+            state: 0,
         }
     }
 
-    pub fn draw(&mut self, mut q: u32) {
+    pub fn draw(&mut self, mut state: u32) {
         let position;
         let range;
         let mut sign = 1.0;
-        q = q % 8;
-        match q {
+        state = state % 8;
+        match state {
             1 => {
                 position = pt2(32.0, 0.0);
                 range = (90, 180)
