@@ -1,7 +1,7 @@
 use nannou::prelude::*;
 use rand;
 
-const colors:[Srgb<u8>; 5] = [GOLD, BURLYWOOD, CORAL, CRIMSON, DARKORANGE];
+const COLORS: [Srgb<u8>; 5] = [GOLD, BURLYWOOD, CORAL, CRIMSON, DARKORANGE];
 
 pub fn start_a6() {
     nannou::app(model).run();
@@ -69,14 +69,15 @@ impl Quarter {
         Quarter {
             position: pt2(0.0, 0.0),
             points: Vec::new(),
-            color: colors[rand::random::<usize>() % 5],
+            color: COLORS[rand::random::<usize>() % 5],
         }
     }
 
     pub fn draw(&mut self, mut q: u32) {
         let position;
         let range;
-        q = q % 4;
+        let mut sign = 1.0;
+        q = q % 8;
         match q {
             1 => {
                 position = pt2(32.0, 0.0);
@@ -90,6 +91,26 @@ impl Quarter {
                 position = pt2(0.0, 32.0);
                 range = (270, 360)
             }
+            4 => {
+                position = pt2(0.0, 32.0);
+                range = (0, 90);
+                sign = -1.0;
+            }
+            5 => {
+                position = pt2(32.0, 32.0);
+                range = (90, 180);
+                sign = -1.0;
+            }
+            6 => {
+                position = pt2(32.0, 0.0);
+                range = (180, 270);
+                sign = -1.0;
+            }
+            7 => {
+                position = pt2(0.0, 0.0);
+                range = (270, 360);
+                sign = -1.0;
+            }
             _ => {
                 position = pt2(0.0, 0.0);
                 range = (0, 90)
@@ -99,7 +120,7 @@ impl Quarter {
         self.points = (min..=max)
             .step_by(10)
             .map(|i| {
-                let radian = deg_to_rad(i as f32);
+                let radian = deg_to_rad(sign * i as f32);
                 pt2(
                     position.x + radian.cos() * 32.0,
                     position.y + radian.sin() * 32.0,
