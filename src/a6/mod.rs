@@ -11,7 +11,7 @@ struct Model {
     window: WindowId,
     duration: f32,
     max: usize,
-    quarters: Vec<Quarter>,
+    grid: Vec<Vec<Quarter>>,
 }
 
 fn model(app: &App) -> Model {
@@ -23,19 +23,20 @@ fn model(app: &App) -> Model {
         .build()
         .unwrap();
 
-    let mut quarters: Vec<Quarter> = Vec::new();
-    for row in -8..8 {
-        for column in -8..8 {
+    let mut grid: Vec<Vec<Quarter>> = Vec::new();
+    for row in 0..16 {
+        grid.push(Vec::new());
+        for column in 0..16 {
             let mut quarter = Quarter::new();
             quarter.draw(rand::random::<u32>());
-            quarters.push(quarter);
+            grid[row].push(quarter);
         }
     }
     Model {
         window,
         duration: 0.0,
         max: 0,
-        quarters,
+        grid,
     }
 }
 
@@ -46,8 +47,10 @@ fn update(app: &App, model: &mut Model, _update: Update) {
         model.max = 11;
     }
     if model.duration > 3.0 {
-        for quarter in model.quarters.iter_mut() {
-            quarter.draw(rand::random::<u32>());
+        for row in 0..16 {
+            for column in 0..16 {
+                model.grid[row][column].draw(rand::random::<u32>());
+            }
         }
         model.duration = 0.0;
         model.max = 0;
@@ -61,9 +64,8 @@ fn view(app: &App, model: &Model, frame: Frame) {
 
     for row in 0..16 {
         for column in 0..16 {
-            let index = row * 16 + column;
-            let slice = &model.quarters[index].points[0..model.max];
-            let color = model.quarters[index].color;
+            let slice = &model.grid[row][column].points[0..model.max];
+            let color = model.grid[row][column].color;
             draw.polygon()
                 .points(slice.to_vec())
                 .x_y(
