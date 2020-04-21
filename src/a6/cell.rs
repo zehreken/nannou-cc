@@ -2,11 +2,28 @@ use nannou::prelude::*;
 use rand;
 
 const COLORS: [Srgb<u8>; 5] = [GOLD, BURLYWOOD, CORAL, CRIMSON, DARKORANGE];
+const MOORE_DIRECTIONS: [Point; 8] = [
+    Point { x: -1, y: -1 },
+    Point { x: -1, y: 0 },
+    Point { x: -1, y: 1 },
+    Point { x: 0, y: 1 },
+    Point { x: 1, y: 1 },
+    Point { x: 1, y: 0 },
+    Point { x: 1, y: -1 },
+    Point { x: 0, y: -1 },
+];
+
+pub struct Point {
+    pub x: i32,
+    pub y: i32,
+}
 
 pub struct Cell {
     pub points: Vec<Point2>,
     pub color: Srgb<u8>,
-    state: u32,
+    pub neighbours: [Point; 8],
+    current_state: u32,
+    future_state: u32,
 }
 
 impl Cell {
@@ -14,7 +31,9 @@ impl Cell {
         Cell {
             points: Vec::new(),
             color: COLORS[rand::random::<usize>() % 5],
-            state: 0,
+            neighbours: calculate_neighbours(0, 0),
+            current_state: 0,
+            future_state: 0,
         }
     }
 
@@ -74,4 +93,43 @@ impl Cell {
             .collect();
         self.points.insert(0, position);
     }
+}
+
+pub fn calculate_neighbours(x: i32, y: i32) -> [Point; 8] {
+    let neighbours: [Point; 8] = [
+        Point {
+            x: MOORE_DIRECTIONS[0].x + x,
+            y: MOORE_DIRECTIONS[0].y + y,
+        },
+        Point {
+            x: MOORE_DIRECTIONS[1].x + x,
+            y: MOORE_DIRECTIONS[1].y + y,
+        },
+        Point {
+            x: MOORE_DIRECTIONS[2].x + x,
+            y: MOORE_DIRECTIONS[2].y + y,
+        },
+        Point {
+            x: MOORE_DIRECTIONS[3].x + x,
+            y: MOORE_DIRECTIONS[3].y + y,
+        },
+        Point {
+            x: MOORE_DIRECTIONS[4].x + x,
+            y: MOORE_DIRECTIONS[4].y + y,
+        },
+        Point {
+            x: MOORE_DIRECTIONS[5].x + x,
+            y: MOORE_DIRECTIONS[5].y + y,
+        },
+        Point {
+            x: MOORE_DIRECTIONS[6].x + x,
+            y: MOORE_DIRECTIONS[6].y + y,
+        },
+        Point {
+            x: MOORE_DIRECTIONS[7].x + x,
+            y: MOORE_DIRECTIONS[7].y + y,
+        },
+    ];
+
+    neighbours
 }
