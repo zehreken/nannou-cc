@@ -13,6 +13,47 @@ const MOORE_DIRECTIONS: [Point; 8] = [
     Point { x: 0, y: -1 },
 ];
 
+#[derive(Copy, Clone)]
+enum Quarter {
+    TopRightCCW,
+    TopLeftCCW,
+    BottomLeftCCW,
+    BottomRightCCW,
+    BottomRightCW,
+    BottomLeftCW,
+    TopLeftCW,
+    TopRightCW,
+}
+
+impl Quarter {
+    fn int_to_enum(i: u32) -> Quarter {
+        match i {
+            0 => Quarter::TopRightCCW,
+            1 => Quarter::TopLeftCCW,
+            2 => Quarter::BottomLeftCCW,
+            3 => Quarter::BottomRightCCW,
+            4 => Quarter::BottomRightCW,
+            5 => Quarter::BottomLeftCW,
+            6 => Quarter::TopLeftCW,
+            7 => Quarter::TopRightCW,
+            _ => Quarter::int_to_enum(i % 8),
+        }
+    }
+
+    fn value(&self) -> (Point2, Point, i8) {
+        match *self {
+            Quarter::TopRightCCW => (pt2(0.0, 0.0), Point { x: 0, y: 90 }, 1),
+            Quarter::TopLeftCCW => (pt2(32.0, 0.0), Point { x: 90, y: 180 }, 1),
+            Quarter::BottomLeftCCW => (pt2(32.0, 32.0), Point { x: 180, y: 270 }, 1),
+            Quarter::BottomRightCCW => (pt2(0.0, 32.0), Point { x: 270, y: 360 }, 1),
+            Quarter::BottomRightCW => (pt2(0.0, 32.0), Point { x: 0, y: 90 }, -1),
+            Quarter::BottomLeftCW => (pt2(32.0, 32.0), Point { x: 90, y: 180 }, -1),
+            Quarter::TopLeftCW => (pt2(32.0, 0.0), Point { x: 180, y: 270 }, -1),
+            Quarter::TopRightCW => (pt2(0.0, 0.0), Point { x: 270, y: 360 }, -1),
+        }
+    }
+}
+
 pub struct Point {
     pub x: i32,
     pub y: i32,
@@ -22,8 +63,8 @@ pub struct Cell {
     pub points: Vec<Point2>,
     pub color: Srgb<u8>,
     pub neighbours: [Point; 8],
-    current_state: u32,
-    future_state: u32,
+    current_state: Quarter,
+    future_state: Quarter,
 }
 
 impl Cell {
@@ -32,59 +73,27 @@ impl Cell {
             points: Vec::new(),
             color: COLORS[rand::random::<usize>() % 5],
             neighbours: calculate_neighbours(0, 0),
-            current_state: 0,
-            future_state: 0,
+            current_state: Quarter::TopRightCCW,
+            future_state: Quarter::TopRightCCW,
         }
     }
 
+    pub fn logic(&mut self) {}
+
+    pub fn swap_state(&mut self) {
+        self.current_state = self.future_state;
+    }
+
     pub fn draw(&mut self, mut state: u32) {
-        let position;
-        let range;
-        let mut sign = 1.0;
-        state = state % 8;
-        match state {
-            1 => {
-                position = pt2(32.0, 0.0);
-                range = (90, 180)
-            }
-            2 => {
-                position = pt2(32.0, 32.0);
-                range = (180, 270)
-            }
-            3 => {
-                position = pt2(0.0, 32.0);
-                range = (270, 360)
-            }
-            4 => {
-                position = pt2(0.0, 32.0);
-                range = (0, 90);
-                sign = -1.0;
-            }
-            5 => {
-                position = pt2(32.0, 32.0);
-                range = (90, 180);
-                sign = -1.0;
-            }
-            6 => {
-                position = pt2(32.0, 0.0);
-                range = (180, 270);
-                sign = -1.0;
-            }
-            7 => {
-                position = pt2(0.0, 0.0);
-                range = (270, 360);
-                sign = -1.0;
-            }
-            _ => {
-                position = pt2(0.0, 0.0);
-                range = (0, 90)
-            }
-        }
-        let (min, max) = range;
+        let quarter = Quarter::int_to_enum(state);
+        let position = quarter.value().0;
+        let range = quarter.value().1;
+        let sign = quarter.value().2;
+        let (min, max) = (range.x, range.y);
         self.points = (min..=max)
             .step_by(10)
             .map(|i| {
-                let radian = deg_to_rad(sign * i as f32);
+                let radian = deg_to_rad(sign as f32 * i as f32);
                 pt2(
                     position.x + radian.cos() * 32.0,
                     position.y + radian.sin() * 32.0,
