@@ -63,15 +63,17 @@ fn view(app: &App, model: &Model, frame: Frame) {
 
     for row in 0..16 {
         for column in 0..16 {
-            let slice = &model.grid[row][column].points[0..model.max];
-            let color = model.grid[row][column].color;
-            draw.polygon()
-                .points(slice.to_vec())
-                .x_y(
-                    (column as i32 - 8) as f32 * 32.0,
-                    (row as i32 - 8) as f32 * 32.0,
-                )
-                .color(color);
+            if model.grid[row][column].points.len() > 10 {
+                let slice = &model.grid[row][column].points[0..model.max];
+                let color = model.grid[row][column].color;
+                draw.polygon()
+                    .points(slice.to_vec())
+                    .x_y(
+                        (column as i32 - 8) as f32 * 32.0,
+                        (row as i32 - 8) as f32 * 32.0,
+                    )
+                    .color(color);
+            }
         }
     }
 
