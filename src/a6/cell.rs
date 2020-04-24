@@ -38,8 +38,8 @@ impl Quarter {
             5 => Quarter::BottomLeftCW,
             6 => Quarter::TopLeftCW,
             7 => Quarter::TopRightCW,
-            // 8 => Quarter::Empty,
-            _ => Quarter::int_to_enum(i % 8),
+            8 => Quarter::Empty,
+            _ => Quarter::int_to_enum(i % 9),
         }
     }
 

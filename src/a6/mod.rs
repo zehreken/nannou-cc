@@ -39,12 +39,12 @@ fn model(app: &App) -> Model {
 }
 
 fn update(app: &App, model: &mut Model, _update: Update) {
-    model.duration = model.duration + app.duration.since_prev_update.as_secs_f32();
-    model.max = (model.duration * 40.0) as usize;
+    model.duration += app.duration.since_prev_update.as_secs_f32();
+    model.max = ((((model.duration - 2.0).abs() * -1.0) + 2.0) * 30.0) as usize;
     if model.max > 11 {
         model.max = 11;
     }
-    if model.duration > 3.0 {
+    if model.duration > 4.0 {
         for row in 0..16 {
             for column in 0..16 {
                 model.grid[row][column].tick(rand::random::<u32>());
