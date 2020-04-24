@@ -1,7 +1,6 @@
 use nannou::prelude::*;
 use rand;
 mod cell;
-mod utils;
 use cell::Cell;
 
 pub fn start_a6() {
@@ -28,7 +27,7 @@ fn model(app: &App) -> Model {
         grid.push(Vec::with_capacity(16));
         for _column in 0..16 {
             let mut quarter = Cell::new();
-            quarter.draw(rand::random::<u32>());
+            quarter.tick(rand::random::<u32>());
             grid[row].push(quarter);
         }
     }
@@ -41,14 +40,14 @@ fn model(app: &App) -> Model {
 
 fn update(app: &App, model: &mut Model, _update: Update) {
     model.duration = model.duration + app.duration.since_prev_update.as_secs_f32();
-    model.max = (model.duration * 30.0) as usize;
+    model.max = (model.duration * 40.0) as usize;
     if model.max > 11 {
         model.max = 11;
     }
     if model.duration > 3.0 {
         for row in 0..16 {
             for column in 0..16 {
-                model.grid[row][column].draw(rand::random::<u32>());
+                model.grid[row][column].tick(rand::random::<u32>());
             }
         }
         model.duration = 0.0;
@@ -63,17 +62,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
 
     for row in 0..16 {
         for column in 0..16 {
-            if model.grid[row][column].points.len() > 10 {
-                let slice = &model.grid[row][column].points[0..model.max];
-                let color = model.grid[row][column].color;
-                draw.polygon()
-                    .points(slice.to_vec())
-                    .x_y(
-                        (column as i32 - 8) as f32 * 32.0,
-                        (row as i32 - 8) as f32 * 32.0,
-                    )
-                    .color(color);
-            }
+            model.grid[row][column].draw(&draw, column as f32, row as f32, model.max);
         }
     }
 
