@@ -1,4 +1,5 @@
 use nannou::prelude::*;
+use std::collections::VecDeque;
 
 pub fn start_a7() {
     nannou::app(model).run();
@@ -6,6 +7,7 @@ pub fn start_a7() {
 
 struct Model {
     window: WindowId,
+    points: VecDeque<Point2>,
 }
 
 fn model(app: &App) -> Model {
@@ -16,7 +18,14 @@ fn model(app: &App) -> Model {
         .view(view)
         .build()
         .unwrap();
-    Model { window }
+
+    let mut points = VecDeque::new();
+    points.extend((0..360).map(|i| {
+        let x = -1.0 + i as f32 / 180.0;
+        let y = 0.0;
+        pt2(100.0 * x, y)
+    }));
+    Model { window, points }
 }
 
 fn view(app: &App, model: &Model, frame: Frame) {
@@ -60,6 +69,12 @@ fn view(app: &App, model: &Model, frame: Frame) {
         let scale = 100.0;
         pt2(x * scale, __y * scale)
     });
+    draw.polyline().points(points).color(GOLD);
+
+    let mut points: Vec<Point2> = Vec::with_capacity(360);
+    for p in &model.points {
+        points.push(*p);
+    }
     draw.polyline().points(points).color(GOLD);
 
     draw.to_frame(app, &frame).unwrap();
