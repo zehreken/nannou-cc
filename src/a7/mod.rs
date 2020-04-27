@@ -7,7 +7,6 @@ pub fn start_a7() {
 
 struct Model {
     window: WindowId,
-    points: VecDeque<Point2>,
 }
 
 fn model(app: &App) -> Model {
@@ -19,13 +18,7 @@ fn model(app: &App) -> Model {
         .build()
         .unwrap();
 
-    let mut points = VecDeque::new();
-    points.extend((0..360).map(|i| {
-        let x = -1.0 + i as f32 / 180.0;
-        let y = 0.0;
-        pt2(100.0 * x, y)
-    }));
-    Model { window, points }
+    Model { window }
 }
 
 fn view(app: &App, model: &Model, frame: Frame) {
@@ -58,78 +51,22 @@ fn view(app: &App, model: &Model, frame: Frame) {
     let points = vec![pt2(scale * _x, scale * _y), pt2(scale * __x, scale * __y)];
     draw.polyline().points(points).color(WHITE);
 
-    // let points = (0..360).map(|i| {
-    //     let mut radian = deg_to_rad(t + i as f32);
-    //     let y = radian.sin();
-    //     radian = deg_to_rad(4.0 * t + i as f32);
-    //     let _y = y + radian.sin() * 0.2;
-    //     radian = deg_to_rad(16.0 * t + i as f32);
-    //     let __y = _y + radian.sin() * 0.2;
-    //     let x = -1.0 + i as f32 / 180.0;
-    //     let scale = 100.0;
-    //     pt2(x * scale, __y * scale)
-    // });
-    // draw.polyline().points(points).color(GOLD);
-
-    let points: Vec<Point2> = (0..360)
-        .map(|i| {
-            let radian = deg_to_rad(i as f32);
-            let x = -1.0 + i as f32 / 180.0;
-            let y = radian.sin();
-            pt2(x, y)
-        })
-        .collect();
-    let mut factor = 3.0;
-    let points: Vec<Point2> = (0..360)
-        .map(|i| {
-            let radian = deg_to_rad(factor * i as f32);
-            let mut x = -1.0 + i as f32 / 180.0;
-            let mut y = radian.sin() / factor;
-            x += points[i].x;
-            y += points[i].y;
-            pt2(x, y)
-        })
-        .collect();
-    factor += 2.0;
-    let points: Vec<Point2> = (0..360)
-        .map(|i| {
-            let radian = deg_to_rad(factor * i as f32);
-            let mut x = -1.0 + i as f32 / 180.0;
-            let mut y = radian.sin() / factor;
-            x += points[i].x;
-            y += points[i].y;
-            pt2(x, y)
-        })
-        .collect();
-    factor += 2.0;
-    let points: Vec<Point2> = (0..360)
-        .map(|i| {
-            let radian = deg_to_rad(factor * i as f32);
-            let mut x = -1.0 + i as f32 / 180.0;
-            let mut y = radian.sin() / factor;
-            x += points[i].x;
-            y += points[i].y;
-            pt2(x, y)
-        })
-        .collect();
-    factor += 2.0;
+    let mut points: [f32; 360] = [0.0; 360];
+    let t = app.duration.since_start.as_secs() as usize;
+    for s in (1..=t).step_by(2) {
+        for i in 0..360 {
+            let radian = deg_to_rad((s * i) as f32);
+            let y = radian.sin() / s as f32;
+            points[i] += y;
+        }
+    }
     let points = (0..360).map(|i| {
-        let radian = deg_to_rad(factor * i as f32);
-        let mut x = -1.0 + i as f32 / 180.0;
-        let mut y = radian.sin() / factor;
-        x += points[i].x;
-        y += points[i].y;
-        x /= 5.0;
+        let x = -1.0 + i as f32 / 180.0;
+        let y = points[i];
         pt2(x * scale, y * scale)
     });
 
     draw.polyline().points(points).color(GOLD);
-
-    // let mut points: Vec<Point2> = Vec::with_capacity(360);
-    // for p in &model.points {
-    //     points.push(*p);
-    // }
-    // draw.polyline().points(points).color(GOLD);
 
     draw.to_frame(app, &frame).unwrap();
 }
