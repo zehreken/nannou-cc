@@ -1,5 +1,4 @@
 use nannou::prelude::*;
-use std::collections::VecDeque;
 
 pub fn start_a7() {
     nannou::app(model).run();
@@ -21,7 +20,7 @@ fn model(app: &App) -> Model {
     Model { window }
 }
 
-fn view(app: &App, model: &Model, frame: Frame) {
+fn view(app: &App, _model: &Model, frame: Frame) {
     let t = 44.0 * app.duration.since_start.as_secs_f32();
     let draw = app.draw();
     draw.background().color(BLACK);
@@ -53,7 +52,8 @@ fn view(app: &App, model: &Model, frame: Frame) {
 
     let mut points: [f32; 360] = [0.0; 360];
     let t = app.duration.since_start.as_secs() as usize;
-    for s in (1..=t).step_by(2) {
+    // sin(x) + sin(3x)/3 + sin(5x)/5 + sin(7x)/7 + ...
+    for s in (1..=t).step_by(2) { // This goes 1, 3, 5, 7...
         for i in 0..360 {
             let radian = deg_to_rad((s * i) as f32);
             let y = radian.sin() / s as f32;
