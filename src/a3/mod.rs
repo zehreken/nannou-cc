@@ -38,7 +38,7 @@ fn view(app: &App, _model: &Model, frame: Frame) {
             let y = radian.sin() * 25.0 * n as f32;
             (pt2(x, y), WHITE)
         });
-        draw.polyline().weight(1.0).colored_points(points);
+        draw.polyline().weight(1.0).points_colored(points);
     }
 
     for i in 1..11 {

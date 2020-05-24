@@ -36,7 +36,7 @@ fn view(app: &App, _model: &Model, frame: Frame) {
         let y = radian.sin() * i as f32 * 0.03;
         (pt2(x, y), rgba(0.0, 0.0, 1.0, 0.8))
     });
-    draw.polyline().weight(8.0).colored_points(points);
+    draw.polyline().weight(8.0).points_colored(points);
 
     let points = (0..=14400).step_by(10).map(|i| {
         let radian = deg_to_rad(t.cos() * 0.5 * i as f32 + 120.0);
@@ -44,7 +44,7 @@ fn view(app: &App, _model: &Model, frame: Frame) {
         let y = radian.sin() * i as f32 * 0.03;
         (pt2(x, y), rgba(0.0, 1.0, 0.0, 0.8))
     });
-    draw.polyline().weight(8.0).colored_points(points);
+    draw.polyline().weight(8.0).points_colored(points);
 
     let points = (0..=14400).step_by(10).map(|i| {
         let radian = deg_to_rad(t.cos() * 0.5 * i as f32 + 240.0);
@@ -52,7 +52,7 @@ fn view(app: &App, _model: &Model, frame: Frame) {
         let y = radian.sin() * i as f32 * 0.03;
         (pt2(x, y), rgba(1.0, 0.0, 0.0, 0.8))
     });
-    draw.polyline().weight(8.0).colored_points(points);
+    draw.polyline().weight(8.0).points_colored(points);
 
     draw.to_frame(app, &frame).unwrap();
 }
