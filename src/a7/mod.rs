@@ -1,15 +1,16 @@
 use nannou::prelude::*;
 
+const TIME_FACTOR: f32 = 3.0;
 pub fn start_a7() {
-    nannou::app(model).run();
+    nannou::app(model).update(update).run();
 }
 
 struct Model {
-    window: WindowId,
+    points: Vec<Point2>,
 }
 
 fn model(app: &App) -> Model {
-    let window = app
+    let _window = app
         .new_window()
         .size(512, 512)
         .title("a7")
@@ -17,11 +18,30 @@ fn model(app: &App) -> Model {
         .build()
         .unwrap();
 
-    Model { window }
+    Model { points: vec![] }
 }
 
-fn view(app: &App, _model: &Model, frame: Frame) {
-    let t = app.duration.since_start.as_secs_f32();
+fn update(app: &App, model: &mut Model, _update: Update) {
+    let t = TIME_FACTOR * app.duration.since_start.as_secs_f32();
+    const SCALE: f32 = 50.0;
+    let mut point_on_circle = pt2(0.0, 0.0);
+
+    for i in 0..5 {
+        let scale = SCALE as f32;
+        let radian = deg_to_rad(2.0.pow(i as f32) as f32 * t);
+        let (x, y) = (
+            point_on_circle.x + radian.cos() * scale,
+            point_on_circle.y + radian.sin() * scale,
+        );
+
+        point_on_circle = pt2(x, y);
+    }
+
+    model.points.push(point_on_circle);
+}
+
+fn view(app: &App, model: &Model, frame: Frame) {
+    let t = TIME_FACTOR * app.duration.since_start.as_secs_f32();
     let draw = app.draw();
     draw.background().color(BLACK);
 
@@ -35,28 +55,11 @@ fn view(app: &App, _model: &Model, frame: Frame) {
     });
     draw.polyline().points(points).color(GREEN);
 
-    // let radian = deg_to_rad(1.0 * t);
-    let scale = 100.0;
-    // let (x, y) = (radian.cos(), radian.sin());
-    // let points = vec![pt2(0.0, 0.0), pt2(scale * x, scale * y)];
-    // draw.polyline().points(points).color(WHITE);
-
-    // let radian = deg_to_rad(4.0 * t);
-    // let (_x, _y) = (x + radian.cos() * 0.2, y + radian.sin() * 0.2);
-    // let points = vec![pt2(scale * x, scale * y), pt2(scale * _x, scale * _y)];
-    // draw.polyline().points(points).color(WHITE);
-
-    // let radian = deg_to_rad(16.0 * t);
-    // let (__x, __y) = (_x + radian.cos() * 0.2, _y + radian.sin() * 0.2);
-    // let points = vec![pt2(scale * _x, scale * _y), pt2(scale * __x, scale * __y)];
-    // draw.polyline().points(points).color(WHITE);
-
-    let colors = [WHITE, RED, BLUE, GREEN];
-    const SCALE: f32 = 100.0;
+    const SCALE: f32 = 50.0;
     let mut center = pt2(0.0, 0.0);
     let mut point_on_circle = pt2(0.0, 0.0);
-    for i in 0..10 {
-        let scale = SCALE / (i + 1) as f32;
+    for i in 0..5 {
+        let scale = SCALE as f32;
         let radian = deg_to_rad(2.0.pow(i as f32) as f32 * t);
         let (x, y) = (
             point_on_circle.x + radian.cos() * scale,
@@ -69,6 +72,12 @@ fn view(app: &App, _model: &Model, frame: Frame) {
         center = point_on_circle;
     }
 
+    draw.polyline()
+        .points(model.points.clone())
+        .color(rgba(255u8, 155, 0, 50));
+
+    /*
+    let scale = 100.0;
     let mut points: [f32; 360] = [0.0; 360];
     let t = app.duration.since_start.as_secs() as usize;
     // This goes 1, 3, 5, 7... sin(x) + sin(3x)/3 + sin(5x)/5 + sin(7x)/7 + ...
@@ -86,6 +95,7 @@ fn view(app: &App, _model: &Model, frame: Frame) {
     });
 
     draw.polyline().points(points).color(GOLD);
+    */
 
     draw.to_frame(app, &frame).unwrap();
 }
