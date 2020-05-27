@@ -16,22 +16,25 @@ mod a6;
 use crate::a6::*;
 mod a7;
 use crate::a7::*;
+mod a8;
+use crate::a8::*;
 
-const A0: &str = "--a0";
-const A1: &str = "--a1";
-const A2: &str = "--a2";
-const A3: &str = "--a3";
-const A4: &str = "--a4";
-const A5: &str = "--a5";
-const A6: &str = "--a6";
-const A7: &str = "--a7";
+const A0: &str = "a0";
+const A1: &str = "a1";
+const A2: &str = "a2";
+const A3: &str = "a3";
+const A4: &str = "a4";
+const A5: &str = "a5";
+const A6: &str = "a6";
+const A7: &str = "a7";
+const A8: &str = "a8";
 
 fn main() {
     let args: Vec<String> = env::args().collect();
     if args.len() < 2 {
         println!(
-            "OPTIONS:\n\t{}\n\t{}\n\t{}\n\t{}\n\t{}\n\t{}\n\t{}\n\t{}",
-            A0, A1, A2, A3, A4, A5, A6, A7
+            "OPTIONS:\n\t{}\n\t{}\n\t{}\n\t{}\n\t{}\n\t{}\n\t{}\n\t{}\n\t{}",
+            A0, A1, A2, A3, A4, A5, A6, A7, A8,
         );
     } else if args.len() > 2 {
         println!("Too many arguments!");
@@ -46,6 +49,7 @@ fn main() {
             A5 => start_a5(),
             A6 => start_a6(),
             A7 => start_a7(),
+            A8 => start_a8(),
             _ => println!("Unknown argument!"),
         }
     }
