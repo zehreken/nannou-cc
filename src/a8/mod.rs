@@ -1,14 +1,14 @@
 use nannou::prelude::*;
+use std::sync::mpsc;
 use std::thread;
-use std::thread::JoinHandle;
 use std::time::Duration;
 
 pub fn start_a8() {
-    nannou::app(model).update(update).run();
+    nannou::app(model).run();
 }
 
 struct Model {
-    handles: Vec<JoinHandle<()>>,
+    colors: Vec<u64>,
 }
 
 fn model(app: &App) -> Model {
@@ -20,24 +20,48 @@ fn model(app: &App) -> Model {
         .build()
         .unwrap();
 
-    Model { handles: vec![] }
+    let (tx, rx) = mpsc::channel();
+    for _ in 0..8 {
+        let tx_t = tx.clone();
+        thread::spawn(move || {
+            for i in 0..8 {
+                tx_t.send(i).unwrap();
+                thread::sleep(Duration::from_millis(i));
+            }
+        });
+    }
+    drop(tx);
+
+    let mut colors = vec![];
+    let handle = thread::spawn(move || {
+        for received in rx {
+            colors.push(received);
+        }
+        colors
+    });
+    colors = handle.join().unwrap();
+
+    Model { colors }
 }
 
-fn update(app: &App, model: &mut Model, update: Update) {
-    for _ in 0..8 {
-        model.handles.push(thread::spawn(|| {
-            for i in 0..8 {
-                toggle(i, i);
-                thread::sleep(Duration::from_millis(100));
-            }
-        }));
+fn view(app: &App, model: &Model, frame: Frame) {
+    let colors = [
+        RED, BLUE, GREEN, ORANGE, AQUAMARINE, GOLD, DEEPPINK, HONEYDEW,
+    ];
+    let draw = app.draw();
+
+    let mut index = 0;
+    for i in &model.colors {
+        draw.rect()
+            .x_y(
+                (index % 8) as f32 * 64.0 - 224.0,
+                (index / 8) as f32 * 64.0 - 224.0,
+            )
+            .w_h(64.0, 64.0)
+            .color(colors[*i as usize]);
+
+        index += 1;
     }
 
-    thread::sleep(Duration::from_millis(1000));
+    draw.to_frame(app, &frame).unwrap();
 }
-
-fn toggle(i: u8, j: u8) {
-    println!("{}, {}", i, j);
-}
-
-fn view(app: &App, model: &Model, frame: Frame) {}
