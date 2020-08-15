@@ -1,33 +1,6 @@
 use std::env;
-
-mod a0;
-use crate::a0::*;
-mod a1;
-use crate::a1::*;
-mod a2;
-use crate::a2::*;
-mod a3;
-use crate::a3::*;
-mod a4;
-use crate::a4::*;
-mod a5;
-use crate::a5::*;
-mod a6;
-use crate::a6::*;
-mod a7;
-use crate::a7::*;
-mod a8;
-use crate::a8::*;
-
-const A0: &str = "a0";
-const A1: &str = "a1";
-const A2: &str = "a2";
-const A3: &str = "a3";
-const A4: &str = "a4";
-const A5: &str = "a5";
-const A6: &str = "a6";
-const A7: &str = "a7";
-const A8: &str = "a8";
+mod sketches;
+use sketches::*;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -50,7 +23,7 @@ fn main() {
             A6 => start_a6(),
             A7 => start_a7(),
             A8 => start_a8(),
-            _ => println!("Unknown argument!"),
+            _ => eprintln!("Unknown argument!"),
         }
     }
 }
