@@ -1,22 +1,35 @@
 use nannou::prelude::*;
 
+const TITLE: &str = "a5";
+
 pub fn start_a5() {
     nannou::app(model).run();
 }
 
 struct Model {
-    window: WindowId,
+    window_id: WindowId,
 }
 
 fn model(app: &App) -> Model {
-    let window = app
+    let window_id = app
         .new_window()
         .size(512, 512)
-        .title("a5")
+        .key_pressed(key_pressed)
+        .title(TITLE)
         .view(view)
         .build()
         .unwrap();
-    Model { window: window }
+
+    Model { window_id }
+}
+
+fn key_pressed(app: &App, model: &mut Model, key: Key) {
+    match key {
+        Key::C => app
+            .main_window()
+            .capture_frame_threaded(format!("{}.png", TITLE)),
+        _ => (),
+    }
 }
 
 fn view(app: &App, _model: &Model, frame: Frame) {
@@ -27,10 +40,10 @@ fn view(app: &App, _model: &Model, frame: Frame) {
 
     let colors = vec![GOLD, CRIMSON, WHITE, ORANGE, CORNFLOWERBLUE, PURPLE];
 
-    let cycle = 20.0;
+    let cycle = 1.0 + (t as i32) as f32;
     for mut c in 1..=6 {
         c = 7 - c;
-        let wave: Vec<Point2> = (0..=360)
+        let wave: Vec<Point2> = (0..360)
             .map(|i| {
                 let angle = deg_to_rad(50.0 * t * c as f32 + cycle * i as f32);
                 let sine_y = angle.sin();
@@ -42,11 +55,7 @@ fn view(app: &App, _model: &Model, frame: Frame) {
             })
             .collect();
 
-        draw.polygon()
-            // polyline()
-            // .weight(5.0)
-            .points(wave)
-            .color(colors[c - 1]);
+        draw.polygon().points(wave).color(colors[c - 1]);
     }
 
     draw.to_frame(app, &frame).unwrap();

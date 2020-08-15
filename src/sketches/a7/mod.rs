@@ -74,7 +74,9 @@ fn view(app: &App, model: &Model, frame: Frame) {
         center = point_on_circle;
     }
 
-    draw.polyline().points(model.points.clone()).color(GREEN);
+    draw.polyline()
+        .points(model.points.clone())
+        .color(CHARTREUSE);
 
     /*
     let scale = 100.0;
