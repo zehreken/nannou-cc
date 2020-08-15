@@ -1,8 +1,8 @@
 use nannou::prelude::*;
 
-const TITLE: &str = "a5";
+const TITLE: &str = "a9";
 
-pub fn start_a5() {
+pub fn start_a9() {
     nannou::app(model).run();
 }
 
@@ -38,12 +38,12 @@ fn view(app: &App, _model: &Model, frame: Frame) {
 
     draw.background().color(BLACK);
 
-    let colors = vec![GOLD, CRIMSON, WHITE, ORANGE, CORNFLOWERBLUE, PURPLE];
+    let colors = vec![CRIMSON, WHITE];
 
     const RADIUS: f32 = 20.0;
     let cycle = 1.0 + (t as i32) as f32;
-    for mut c in 1..=6 {
-        c = 7 - c;
+    for mut c in 1..3 {
+        c = 3 - c;
         let wave: Vec<Point2> = (0..360)
             .map(|i| {
                 let angle = deg_to_rad(cycle * i as f32 + 50.0 * t * c as f32); // Part after + is for animation
@@ -51,7 +51,7 @@ fn view(app: &App, _model: &Model, frame: Frame) {
                 let radian = deg_to_rad(i as f32);
                 let y = radian.sin() * RADIUS + radian.sin() * sine_y * 2.0;
                 let x = radian.cos() * RADIUS + radian.cos() * sine_y * 2.0;
-                let scale = 2.0 * c as f32;
+                let scale = 5.0 * c as f32;
                 pt2(x * scale, y * scale)
             })
             .collect();
