@@ -8,6 +8,7 @@ pub mod a6;
 pub mod a7;
 pub mod a8;
 pub mod a9;
+pub mod sketch_utils;
 
 pub use a0::*;
 pub use a1::*;

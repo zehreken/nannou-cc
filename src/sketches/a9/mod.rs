@@ -1,3 +1,4 @@
+use super::sketch_utils::*;
 use nannou::prelude::*;
 
 const TITLE: &str = "a9";
@@ -31,11 +32,6 @@ fn key_pressed(app: &App, model: &mut Model, key: Key) {
     }
 }
 
-fn capture_frame(app: &App, frame: u64) {
-    app.main_window()
-        .capture_frame(format!("{:02}.png", frame));
-}
-
 fn view(app: &App, _model: &Model, frame: Frame) {
     let t = app.time;
     let draw = app.draw();
@@ -51,7 +47,8 @@ fn view(app: &App, _model: &Model, frame: Frame) {
         c = 3 - c;
         let wave: Vec<Point2> = (0..360)
             .map(|i| {
-                let angle = deg_to_rad(cycle * i as f32 + 6.0 * app.elapsed_frames() as f32 * c as f32); // Part after + is for animation
+                let angle =
+                    deg_to_rad(cycle * i as f32 + 6.0 * app.elapsed_frames() as f32 * c as f32); // Part after + is for animation
                 let sine_y = angle.sin();
                 let radian = deg_to_rad(i as f32);
                 let y = radian.sin() * RADIUS + radian.sin() * sine_y * 2.0;

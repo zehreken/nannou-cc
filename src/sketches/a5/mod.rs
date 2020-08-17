@@ -41,7 +41,7 @@ fn view(app: &App, _model: &Model, frame: Frame) {
     let colors = vec![GOLD, CRIMSON, WHITE, ORANGE, CORNFLOWERBLUE, PURPLE];
 
     const RADIUS: f32 = 20.0;
-    let cycle = 1.0 + (t as i32) as f32;
+    let cycle = 20.0;
     for mut c in 1..=6 {
         c = 7 - c;
         let wave: Vec<Point2> = (0..360)
