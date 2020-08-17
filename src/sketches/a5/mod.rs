@@ -1,4 +1,5 @@
 use nannou::prelude::*;
+use super::sketch_utils::*;
 
 const TITLE: &str = "a5";
 
@@ -20,21 +21,22 @@ fn model(app: &App) -> Model {
         .build()
         .unwrap();
 
+        app.set_loop_mode(LoopMode::loop_ntimes(60));
     Model { window_id }
 }
 
 fn key_pressed(app: &App, model: &mut Model, key: Key) {
     match key {
-        Key::C => app
-            .main_window()
-            .capture_frame_threaded(format!("{}.png", TITLE)),
+        Key::C => capture_frame(app, 0),
         _ => (),
     }
 }
 
 fn view(app: &App, _model: &Model, frame: Frame) {
-    let t = app.time;
+    // let t = app.time;
+    let t = app.elapsed_frames() as f32;
     let draw = app.draw();
+    capture_frame(app, app.elapsed_frames());
 
     draw.background().color(BLACK);
 
@@ -46,7 +48,7 @@ fn view(app: &App, _model: &Model, frame: Frame) {
         c = 7 - c;
         let wave: Vec<Point2> = (0..360)
             .map(|i| {
-                let angle = deg_to_rad(cycle * i as f32 + 50.0 * t * c as f32); // Part after + is for animation
+                let angle = deg_to_rad(cycle * i as f32 + 6.0 * t * c as f32); // Part after + is for animation
                 let sine_y = angle.sin();
                 let radian = deg_to_rad(i as f32);
                 let y = radian.sin() * RADIUS + radian.sin() * sine_y * 2.0;
