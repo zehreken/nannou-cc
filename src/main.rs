@@ -5,10 +5,7 @@ use sketches::*;
 fn main() {
     let args: Vec<String> = env::args().collect();
     if args.len() < 2 {
-        println!(
-            "OPTIONS:\n\t{}\n\t{}\n\t{}\n\t{}\n\t{}\n\t{}\n\t{}\n\t{}\n\t{}",
-            A0, A1, A2, A3, A4, A5, A6, A7, A8,
-        );
+        println!("OPTIONS:\n{} - {}", A0, A10,);
     } else if args.len() > 2 {
         println!("Too many arguments!");
     } else {
@@ -24,6 +21,7 @@ fn main() {
             A7 => start_a7(),
             A8 => start_a8(),
             A9 => start_a9(),
+            A10 => start_a10(),
             _ => eprintln!("Unknown argument!"),
         }
     }
