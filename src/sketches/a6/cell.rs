@@ -2,7 +2,14 @@ use nannou::draw::Draw;
 use nannou::prelude::*;
 use rand;
 
-const COLORS: [Srgb<u8>; 5] = [GOLD, BURLYWOOD, CORAL, CRIMSON, DARKORANGE];
+// const COLORS: [Srgb<u8>; 5] = [GOLD, BURLYWOOD, CORAL, CRIMSON, DARKORANGE];
+const COLORS: [Srgb<u8>; 5] = [
+    CRIMSON,
+    CORNFLOWERBLUE,
+    DODGERBLUE,
+    DEEPSKYBLUE,
+    MEDIUMSPRINGGREEN,
+];
 const MOORE_DIRECTIONS: [Point; 8] = [
     Point { x: -1, y: -1 },
     Point { x: -1, y: 0 },

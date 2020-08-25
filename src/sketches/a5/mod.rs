@@ -21,7 +21,7 @@ fn model(app: &App) -> Model {
         .build()
         .unwrap();
 
-    app.set_loop_mode(LoopMode::loop_ntimes(60));
+    // app.set_loop_mode(LoopMode::loop_ntimes(60));
     Model { window_id }
 }
 
@@ -36,7 +36,7 @@ fn view(app: &App, _model: &Model, frame: Frame) {
     // let t = app.time;
     let t = app.elapsed_frames() as f32;
     let draw = app.draw();
-    capture_frame(app, app.elapsed_frames());
+    // capture_frame(app, app.elapsed_frames());
 
     draw.background().color(BLACK);
 

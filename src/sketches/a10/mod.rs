@@ -70,7 +70,10 @@ fn view(app: &App, model: &Model, frame: Frame) {
             })
             .collect();
 
-        draw.polyline().weight(1.0).points(wave.clone()).color(WHITE);
+        draw.polyline()
+            .weight(1.0)
+            .points(wave.clone())
+            .color(WHITE);
         // draw.polyline().weight(5.0).points(wave).color(BLACK);
     }
 

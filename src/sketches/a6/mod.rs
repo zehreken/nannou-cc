@@ -1,6 +1,7 @@
 use nannou::prelude::*;
 use rand;
 mod cell;
+use super::sketch_utils::*;
 use cell::Cell;
 
 pub fn start_a6() {
@@ -31,6 +32,7 @@ fn model(app: &App) -> Model {
             grid[row].push(quarter);
         }
     }
+    // app.set_loop_mode(LoopMode::loop_ntimes(60));
     Model {
         duration: 0.0,
         max: 0,
@@ -57,6 +59,8 @@ fn update(app: &App, model: &mut Model, _update: Update) {
 
 fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw();
+
+    // capture_frame(app, app.elapsed_frames());
 
     draw.background().color(BLACK);
 
