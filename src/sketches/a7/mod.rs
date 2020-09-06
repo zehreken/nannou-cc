@@ -5,8 +5,23 @@ pub fn start_a7() {
     nannou::app(model).update(update).run();
 }
 
+struct Segment {
+    pub start: Point2,
+    pub end: Point2,
+}
+
+impl Segment {
+    fn new() -> Self {
+        Self {
+            start: Point2::zero(),
+            end: Point2::zero(),
+        }
+    }
+}
+
 struct Model {
     points: Vec<Point2>,
+    segments: Vec<Segment>,
 }
 
 fn model(app: &App) -> Model {
@@ -18,16 +33,23 @@ fn model(app: &App) -> Model {
         .build()
         .unwrap();
 
-    Model { points: vec![] }
+    const SEGMENT_COUNT: usize = 4;
+    let segments = (0..SEGMENT_COUNT).map(|_| Segment::new()).collect();
+
+    Model {
+        points: vec![],
+        segments,
+    }
 }
 
 fn update(app: &App, model: &mut Model, _update: Update) {
-    let t = TIME_FACTOR * app.duration.since_start.as_secs_f32() + 90.0;
+    let t = TIME_FACTOR * app.duration.since_start.as_secs_f32() + 0.0;
     const SCALE: f32 = 100.0;
+    let mut center = pt2(0.0, 0.0);
     let mut point_on_circle = pt2(0.0, 0.0);
 
-    for i in 0..5 {
-        let scale = SCALE / (5 - i) as f32;
+    for i in 0..model.segments.len() {
+        let scale = SCALE / (model.segments.len() - i) as f32;
         let radian = deg_to_rad(2.0.pow(i as f32) as f32 * t);
         let (x, y) = (
             point_on_circle.x + radian.cos() * scale,
@@ -35,48 +57,43 @@ fn update(app: &App, model: &mut Model, _update: Update) {
         );
 
         point_on_circle = pt2(x, y);
+        model.segments[i].start = center;
+        model.segments[i].end = point_on_circle;
+        center = point_on_circle;
     }
 
     model.points.push(point_on_circle);
 }
 
 fn view(app: &App, model: &Model, frame: Frame) {
-    let t = TIME_FACTOR * app.duration.since_start.as_secs_f32() + 90.0;
     let draw = app.draw();
     draw.background().color(BLACK);
 
     /*
     // The circle
-    let points = (0..360).map(|i| {
+    let points = (0..=360).map(|i| {
         let radian = deg_to_rad(i as f32);
         let x = radian.cos();
         let y = radian.sin();
         let scale = 100.0;
         pt2(x * scale, y * scale)
     });
-    draw.polyline().points(points).color(GREEN);
+    draw.polyline().points(points).color(CRIMSON);
     */
-
-    const SCALE: f32 = 100.0;
-    let mut center = pt2(0.0, 0.0);
-    let mut point_on_circle = pt2(0.0, 0.0);
-    for i in 0..5 {
-        let scale = SCALE / (5 - i) as f32;
-        let radian = deg_to_rad(2.0.pow(i as f32) as f32 * t);
-        let (x, y) = (
-            point_on_circle.x + radian.cos() * scale,
-            point_on_circle.y + radian.sin() * scale,
-        );
-
-        point_on_circle = pt2(x, y);
-        let points = vec![center, point_on_circle];
-        draw.polyline().weight(2.0).points(points).color(WHITE);
-        center = point_on_circle;
-    }
 
     draw.polyline()
         .points(model.points.clone())
-        .color(CHARTREUSE);
+        .color(CRIMSON)
+        .rotate(PI / 2.0);
+
+    for i in 0..model.segments.len() {
+        let points = vec![model.segments[i].start, model.segments[i].end];
+        draw.polyline()
+            .weight(1.0)
+            .points(points)
+            .color(WHITE)
+            .rotate(PI / 2.0);
+    }
 
     /*
     let scale = 100.0;
