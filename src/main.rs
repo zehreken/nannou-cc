@@ -5,7 +5,7 @@ use sketches::*;
 fn main() {
     let args: Vec<String> = env::args().collect();
     if args.len() < 2 {
-        println!("OPTIONS:\n{} - {}", A0, A10,);
+        println!("OPTIONS:\n{} - {}", A0, A11,);
     } else if args.len() > 2 {
         println!("Too many arguments!");
     } else {
@@ -22,6 +22,8 @@ fn main() {
             A8 => start_a8(),
             A9 => start_a9(),
             A10 => start_a10(),
+            A11 => start_a11(),
+
             _ => eprintln!("Unknown argument!"),
         }
     }
