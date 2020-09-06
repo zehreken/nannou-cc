@@ -1,6 +1,7 @@
+use super::sketch_utils::*;
 use nannou::prelude::*;
 
-const TIME_FACTOR: f32 = 20.0;
+const TIME_FACTOR: f32 = 10.0;
 pub fn start_a11() {
     nannou::app(model).update(update).run();
 }
@@ -28,7 +29,8 @@ fn model(app: &App) -> Model {
     let _window = app
         .new_window()
         .size(512, 512)
-        .title("a7")
+        .key_pressed(key_pressed)
+        .title("a11")
         .view(view)
         .build()
         .unwrap();
@@ -42,15 +44,22 @@ fn model(app: &App) -> Model {
     }
 }
 
+fn key_pressed(app: &App, model: &mut Model, key: Key) {
+    match key {
+        Key::C => capture_frame(app, 0),
+        _ => (),
+    }
+}
+
 fn update(app: &App, model: &mut Model, _update: Update) {
     let t = TIME_FACTOR * app.duration.since_start.as_secs_f32() + 0.0;
-    const SCALE: f32 = 100.0;
+    const SCALE: f32 = 200.0;
     let mut center = pt2(0.0, 0.0);
     let mut point_on_circle = pt2(0.0, 0.0);
 
     for i in 0..model.segments.len() {
         let scale = SCALE / (model.segments.len() - i) as f32;
-        let radian = deg_to_rad(2.0.pow(i as f32) as f32 * t);
+        let radian = PI / 2.0 + deg_to_rad(2.0.pow(i as f32) as f32 * t);
         let (x, y) = (
             point_on_circle.x + radian.cos() * scale,
             point_on_circle.y + radian.sin() * scale,
@@ -67,8 +76,10 @@ fn update(app: &App, model: &mut Model, _update: Update) {
 
 fn view(app: &App, model: &Model, frame: Frame) {
     let mut draw = app.draw();
-    draw = draw.blend(BLEND_SUBTRACT);
-    // draw.background().color(BLACK);
+    draw = draw.blend(BLEND_NORMAL);
+    if app.elapsed_frames() == 1 {
+        draw.background().color(BLACK);
+    }
 
     /*
     // The circle
@@ -81,20 +92,30 @@ fn view(app: &App, model: &Model, frame: Frame) {
     });
     draw.polyline().points(points).color(CRIMSON);
     */
-
-    for i in 0..model.segments.len() {
-        // let points = vec![model.segments[i].start, model.segments[i].end];
+    let colors = vec![
+        nannou::color::rgba(1.0, 0.0, 0.21, 0.2),
+        nannou::color::rgba(1.0, 0.2, 0.21, 0.2),
+        nannou::color::rgba(1.0, 0.4, 0.21, 0.2),
+        nannou::color::rgba(0.0, 0.0, 0.21, 0.2),
+        nannou::color::rgba(1.0, 1.0, 0.21, 0.2),
+        nannou::color::rgba(0.0, 0.8, 0.4, 0.2),
+        nannou::color::rgba(0.5, 0.0, 0.21, 0.2),
+        nannou::color::rgba(0.9, 0.3, 1.0, 0.2),
+        nannou::color::rgba(0.3, 0.3, 0.1, 0.2),
+        nannou::color::rgba(1.0, 0.8, 0.0, 0.2),
+    ];
+    for (i, segment) in model.segments.iter().enumerate() {
+        // let points = vec![segment.start, segment.end];
         // draw.polyline()
         //     .weight(1.0)
         //     .points(points)
-        //     .color(WHITE)
-        //     .rotate(PI / 2.0);
+        //     .color(WHITE);
 
         // if i == model.segments.len() - 1 {
         draw.ellipse()
-            .w_h(30.0, 30.0)
-            .x_y(model.segments[i].end.x, model.segments[i].end.y)
-            .color(if i % 2 == 0 { CRIMSON } else { WHITE });
+            .w_h(30.0 - 3.0 * i as f32, 30.0 - 3.0 * i as f32)
+            .x_y(segment.end.x, segment.end.y)
+            .color(colors[i % colors.len()]);
         // }
     }
 
