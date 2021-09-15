@@ -23,6 +23,7 @@ fn main() {
             A9 => start_a9(),
             A10 => start_a10(),
             A11 => start_a11(),
+            A12 => start_a12(),
 
             _ => eprintln!("Unknown argument!"),
         }

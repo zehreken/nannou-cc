@@ -83,7 +83,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
         draw.background().color(BLACK);
     }
 
-    if app.elapsed_frames() == 720{
+    if app.elapsed_frames() == 720 {
         capture_frame(app, app.elapsed_frames());
     }
 
